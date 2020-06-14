@@ -1,5 +1,5 @@
-import 'package:delivery_app/screens/client/home.dart';
-import 'package:delivery_app/screens/client/search.dart';
+import 'package:delivery_app/firebase_services/order_controller.dart';
+import 'package:delivery_app/models/order.dart';
 import 'package:delivery_app/screens/client/track_order.dart';
 import 'package:flutter/material.dart';
 
@@ -12,11 +12,18 @@ class Orders extends StatefulWidget {
 class _OrdersState extends State<Orders> {
 
   int _selectedIndex = 0;
-  
+  List<Order> orderList = [];
   @override
   void initState() {
-    //TODO
+    getAllOrders();
     super.initState();
+  }
+
+  getAllOrders() async {
+    List<Order> _orderList = await OrderController.getAllCategories();
+    setState(() {
+      orderList = _orderList;
+    });
   }
 
 
@@ -70,7 +77,7 @@ class _OrdersState extends State<Orders> {
                   context: context,
                   removeTop: true,
                   child:  ListView.builder(
-                    itemCount: 3,
+                    itemCount: orderList.length,
                     itemBuilder: order,
                   ),
                 ),
@@ -111,20 +118,20 @@ class _OrdersState extends State<Orders> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+
                 Expanded(
                   flex: 1,
-                  // child: Container(color: Color),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text("HUT Pack con Orilla Cheddar Gold", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)), 
+                      Text(orderList[index].orderName, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)), 
                     ],
                   ),
                 ),
 
                 Expanded(
                   flex: 2,
-                  child: Text("\$14.99", )
+                  child: Text("\$14.99")
                 ),
               ],
             ),
