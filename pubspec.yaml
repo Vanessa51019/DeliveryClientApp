@@ -31,6 +31,7 @@ dependencies:
   shared_preferences: ^0.4.3
   carousel_slider: ^2.1.0
   uuid: ^2.0.0
+  geolocator: ^5.3.2+2
   google_maps_flutter: 
 
 dev_dependencies:
@@ -61,6 +62,7 @@ flutter:
    - assets/products/product3.jpg
    - assets/products/clothes.jpg
    - assets/products/detail.jpg
+   - assets/images/driver.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
