@@ -53,7 +53,7 @@ class _TrackOrderState extends State<TrackOrder> {
 
 
   updateValueToCloud(Position position){
-    //This is where you track the order from 
+    //This is where you track the order from
     //Assuming this device is the driver you update the order from here
     //Since it is all dummy data you would update this when you are done building the order system
 
@@ -75,9 +75,9 @@ class _TrackOrderState extends State<TrackOrder> {
   _getAndSetPositionMarker()async {
     var geolocator = Geolocator();
     var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
-    positionStream = geolocator.getPositionStream(locationOptions).listen(
-            (Position position) async{
-              updateValueToCloud(position);
+    Firestore.instance.collection("orders").document("${widget.orderId}").snapshots().listen(
+            (data) async{
+              GeoPoint position = data['position'];
               var controller = await _controller.future;
               if(!_initiated){
                 controller.animateCamera(CameraUpdate.newLatLng(
