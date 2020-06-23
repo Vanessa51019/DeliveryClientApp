@@ -1,5 +1,5 @@
-import 'package:delivery_app/screens/client/home.dart';
-import 'package:delivery_app/screens/client/orders.dart';
+import 'package:delivery_app/firebase_services/product_controller.dart';
+import 'package:delivery_app/models/product.dart';
 import 'package:delivery_app/screens/client/product_detail.dart';
 import 'package:flutter/material.dart';
 
@@ -10,11 +10,20 @@ class Search extends StatefulWidget {
 
 }
 class _SearchState extends State<Search> {
+
+  List<Product> productList = [];
   
   @override
   void initState() {
-    //TODO
+    getAllAvailableProducts();
     super.initState();
+  }
+
+  getAllAvailableProducts() async {
+    List<Product> _productList = await ProductController.getAllAvailableProducts();
+    setState(() {
+      productList = _productList;
+    });
   }
 
 
@@ -29,57 +38,47 @@ class _SearchState extends State<Search> {
           child: Image.asset("assets/images/background.jpg", fit: BoxFit.cover),
         ),
 
-        Column(
+        ListView(
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Image.asset("assets/images/small_logo.png"),
-                  Center(
-                    child: Text("SEARCH", style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
-                  ),
-                ],
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Image.asset("assets/images/small_logo.png"),
+                Center(
+                  child: Text("SEARCH", style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
+                ),
+              ],
             ),
-            SizedBox(height: 10,),
 
-            Expanded(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Type the word in the product",
-                    hintStyle: TextStyle(color: Color.fromRGBO(198, 216, 223, 1),),
-                    border: OutlineInputBorder(
-                    ),
-                    suffixIcon: Padding(
-                      padding: EdgeInsets.all(0.0),
-                      child: Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
+            Container(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "Type the word in the product",
+                  hintStyle: TextStyle(color: Color.fromRGBO(198, 216, 223, 1),),
+                  border: OutlineInputBorder(
+                  ),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.all(0.0),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
               ),
             ),
 
-            Expanded(
-              flex: 5,
-              child: Container(
-                margin: EdgeInsets.only(left: 70, right: 70,),
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: searchResult,
-                ),
+            Container(
+              height: MediaQuery.of(context).size.height*2/3,
+              margin: EdgeInsets.only(left: 70, right: 70, top: 20),
+              child: ListView.builder(
+                itemCount: productList.length,
+                itemBuilder: searchResult,
               ),
             ),
-            
           ],
         ),
       ],
@@ -106,14 +105,14 @@ class _SearchState extends State<Search> {
             Expanded(
               flex: 6,
               child: Container(
-                child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+                child: Image.network(productList[index].image, fit: BoxFit.cover),
               ),
             ),
 
             Expanded(
               flex: 1,
               child: Container(
-                child: Text("Product Name", style: TextStyle(fontSize: 16),),
+                child: Text(productList[index].productName, style: TextStyle(fontSize: 16),),
               ),
             ),
 

@@ -1,19 +1,62 @@
+import 'package:delivery_app/firebase_services/cart_controller.dart';
+import 'package:delivery_app/firebase_services/order_controller.dart';
+import 'package:delivery_app/models/cart_product.dart';
 import 'package:delivery_app/screens/client/home.dart';
 import 'package:delivery_app/screens/client/search.dart';
 import 'package:flutter/material.dart';
 
-class Cart extends StatefulWidget {
+class CartView extends StatefulWidget {
 
   @override
-  _CartState createState() => _CartState();
+  _CartViewState createState() => _CartViewState();
 
 }
-class _CartState extends State<Cart> {
+class _CartViewState extends State<CartView> {
   
+  double subTotal = 0.0;
+  List<CartProduct> cartProductList = [];
   @override
   void initState() {
-    //TODO
+    getAllCartProducts();
     super.initState();
+  }
+
+  getAllCartProducts() async {
+    List<CartProduct> _cartProductList = await CartController.getAllCartProducts();
+    setState(() {
+      cartProductList = _cartProductList;
+    });
+  }
+
+  double getSubTotal() {
+    setState(() {
+      subTotal = 0.0;
+    });
+    for(int i=0; i < cartProductList.length; i++){
+      setState(() {
+        subTotal += double.parse(cartProductList[i].productPrice) * cartProductList[i].count;
+      });
+    }
+    return subTotal;
+  }
+
+  deleteCartProduct(int index) async {
+    setState(() {
+      cartProductList.removeAt(index);
+    });
+    await CartController.deleteCartProduct(cartProductList);
+  }
+
+  updateCartProductCount(List<CartProduct> updatedCartProductList) async {
+    await CartController.updateCartProductCount(updatedCartProductList);
+  }
+
+  placeOrder() async {
+    await CartController.deleteAllCartProducts();
+    await OrderController.placeOrder(getSubTotal(), cartProductList);
+    setState(() {
+      cartProductList = [];
+    });
   }
 
   void _onItemTapped(int index) {
@@ -114,10 +157,7 @@ class _CartState extends State<Cart> {
                       children: <Widget>[
                         GestureDetector(
                           onTap: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) =>Home()),
-                            );
+                            Navigator.pop(context, cartProductList.length);
                           },
                           child: Icon(Icons.arrow_back, color: Colors.white,),
                         ),
@@ -138,7 +178,7 @@ class _CartState extends State<Cart> {
                       height: 300, 
                       child: ListView.builder(
                         primary: false,
-                        itemCount: 3,
+                        itemCount: cartProductList.length,
                         itemBuilder: cart_item,
                       ),
                     ),
@@ -200,65 +240,65 @@ class _CartState extends State<Cart> {
                                 Expanded(
                                   flex: 1,
                                   child: Container(
-                                    child: Text("SUBTOTAL", style: TextStyle(color: Colors.white),),                                ),
+                                    child: Text("SUBTOTAL", style: TextStyle(color: Colors.white),),),
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: Container(
                                     margin: EdgeInsets.only(right: 40,),
-                                    child: Text("\$180.00", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
+                                    child: Text("\$" + getSubTotal().toString(), style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
                                   ),
                                 ),
                               ],
                             ),
                           ),
 
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Container()
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text("TAX", style: TextStyle(color: Colors.white),),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 40,),
-                                    child: Text("\$3.40", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   margin: EdgeInsets.only(bottom: 10),
+                          //   child: Row(
+                          //     crossAxisAlignment: CrossAxisAlignment.end,
+                          //     children: <Widget>[
+                          //       Expanded(
+                          //         flex: 1,
+                          //         child: Container()
+                          //       ),
+                          //       Expanded(
+                          //         flex: 1,
+                          //         child: Text("TAX", style: TextStyle(color: Colors.white),),
+                          //       ),
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Container(
+                          //           margin: EdgeInsets.only(right: 40,),
+                          //           child: Text("\$3.40", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
 
-                          Container(
-                            margin: EdgeInsets.only(bottom:10),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Container()
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text("DELIVERY", style: TextStyle(color: Colors.white),),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 40,),
-                                    child: Text("\$2.00", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   margin: EdgeInsets.only(bottom:10),
+                          //   child: Row(
+                          //     children: <Widget>[
+                          //       Expanded(
+                          //         flex: 1,
+                          //         child: Container()
+                          //       ),
+                          //       Expanded(
+                          //         flex: 1,
+                          //         child: Text("DELIVERY", style: TextStyle(color: Colors.white),),
+                          //       ),
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Container(
+                          //           margin: EdgeInsets.only(right: 40,),
+                          //           child: Text("\$2.00", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Container(
                             child: Row(
                               children: <Widget>[
@@ -281,7 +321,7 @@ class _CartState extends State<Cart> {
                                           flex: 2,
                                           child: Container(
                                             margin: EdgeInsets.only(right: 40,),
-                                            child: Text("\$185.40", style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
+                                            child: Text("\$" + (getSubTotal()).toString(), style: TextStyle(color: Colors.white), textAlign: TextAlign.end,),
                                           ),
                                         ),
                                       ],
@@ -302,7 +342,9 @@ class _CartState extends State<Cart> {
                     ),
                     MaterialButton(
                       height: 50,
-                      onPressed: (){},
+                      onPressed: (){
+                        placeOrder();
+                      },
                       color: Color.fromRGBO(246, 170, 0, 1),
                       child: Text("PLACE ORDER"),
                     ),
@@ -321,9 +363,11 @@ class _CartState extends State<Cart> {
       height: 100,
       child: Row(
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Image.asset('assets/products/clothes.jpg')
+          Container(
+            height: 100,
+            width: 50,
+            margin: EdgeInsets.only(right: 10, left: 10),
+            child: Image.network(cartProductList[index].productImage)
           ),
 
           Expanded(
@@ -332,15 +376,15 @@ class _CartState extends State<Cart> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Saturn", style: TextStyle(color: Colors.white, fontSize: 16),),
+                Text(cartProductList[index].productName, style: TextStyle(color: Colors.white, fontSize: 16),),
                 Container(
                   width: 45,
                   child: Theme(
                      data: Theme.of(context).copyWith(
                         canvasColor: Colors.blue.shade200,
                       ),
-                    child: DropdownButton<String>(
-                      value: "1",
+                    child: DropdownButton<int>(
+                      value: cartProductList[index].count,
                       iconSize: 24,
                       iconEnabledColor: Colors.white,
                       elevation: 16,
@@ -348,18 +392,18 @@ class _CartState extends State<Cart> {
                       style: TextStyle(
                         color: Colors.white
                       ),
-                      onChanged: (String newValue) {
-                        // Select Branch Store for login
+                      onChanged: (int newValue) {
                         setState(() {
-                          // dropdownValue = newValue;
+                          cartProductList[index].count = newValue;
+                          updateCartProductCount(cartProductList);
                         });
                       },
-                      items: <String>['1', '2', '3', '4']
-                        .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
+                      items: <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
                             value: value,
                             child: Text(
-                              value,
+                              value.toString(),
                             ),
                           );
                         })
@@ -380,9 +424,14 @@ class _CartState extends State<Cart> {
             flex: 1,
             child: Column(
               children: <Widget>[
-                Icon(Icons.delete_forever, color: Colors.red),
+                GestureDetector(
+                  onTap: (){
+                    deleteCartProduct(index);
+                  },
+                  child: Icon(Icons.delete_forever, color: Colors.red),
+                ),
                 SizedBox(height: 5),
-                Text("\$45.00", style: TextStyle(color: Colors.white),)
+                Text("\$" + (double.parse(cartProductList[index].productPrice) * cartProductList[index].count).toString(), style: TextStyle(color: Colors.white),)
               ],
             ),
           ),

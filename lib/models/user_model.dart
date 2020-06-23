@@ -1,29 +1,25 @@
 class User {
   String uid;
-  String username;
+  String name;
   String email;
-  int type;
 
   User(
     this.uid,
-    this.username,
+    this.name,
     this.email,
-    this.type,
   );
 
 
   User.fromJson(Map<dynamic, dynamic> json){
     uid = json['uid'];
-    username = json['username'];
+    name = json['name'];
     email = json['email'];
-    type = json['type'];
   }
 
 
   Map<String, dynamic> toJson() => {
     'uid': uid,
-    'username': username,
+    'name': name,
     'email': email,
-    'type': type,
   };
 }

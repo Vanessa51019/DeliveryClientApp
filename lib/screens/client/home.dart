@@ -1,7 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:delivery_app/firebase_services/ads_controller.dart';
+import 'package:delivery_app/firebase_services/cart_controller.dart';
+import 'package:delivery_app/firebase_services/product_controller.dart';
 import 'package:delivery_app/models/ads_model.dart';
-import 'package:delivery_app/screens/client/cart.dart';
+import 'package:delivery_app/models/cart_product.dart';
+import 'package:delivery_app/models/product.dart';
+import 'package:delivery_app/screens/client/add_cart.dart';
+import 'package:delivery_app/screens/client/cart_view.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -15,19 +20,37 @@ class _HomeState extends State<Home> {
   bool promotionVertical = false;
   bool adsVerticalValue = false;
   bool horizontal = true;
+  List<Product> productList = [];
   List<Ads> adsList = [];
+  int cartProductCount = 0;
   @override
   void initState() {
-    // TODO: implement initState
-    getAllAds();
+    getAllCartProducts();
+    getAllAvailableAds();
+    getAllAvailableProducts();
     super.initState();
   }
 
-  getAllAds() async {
-    List<Ads> _adsList = await AdsController.getAllAds();
+  getAllAvailableProducts() async {
+    List<Product> _productList = await ProductController.getAllAvailableProducts();
+    setState(() {
+      productList = _productList;
+    });
+  }
+
+  getAllAvailableAds() async {
+    List<Ads> _adsList = await AdsController.getAllAvailableAds();
     setState(() {
       adsList = _adsList;
     });
+  }
+
+  getAllCartProducts() async {
+    List<CartProduct> _cartProductList = await CartController.getAllCartProducts();
+    setState(() {
+      cartProductCount = _cartProductList.length;
+    });
+    
   }
 
   @override
@@ -50,8 +73,12 @@ class _HomeState extends State<Home> {
                     onTap: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => Cart()),  
-                      );
+                        MaterialPageRoute(builder: (_) => CartView()),  
+                      ).then((value){
+                        setState(() {
+                          cartProductCount = value;
+                        });
+                      });
                     },
                     child: Padding(
                       padding: EdgeInsets.only(top: 25, left: 10, right: 10),
@@ -60,7 +87,7 @@ class _HomeState extends State<Home> {
                         children: <Widget>[
                           Icon(Icons.settings, color: Color.fromRGBO(192, 220, 245, 1)),
                           Badge(
-                            badgeContent: Text('3', style: TextStyle(color: Colors.white),),
+                            badgeContent: Text(cartProductCount.toString() , style: TextStyle(color: Colors.white),),
                             child: Icon(Icons.shopping_cart, color: Color.fromRGBO(192, 220, 245, 1)),
                           ),
                         ],
@@ -87,7 +114,7 @@ class _HomeState extends State<Home> {
                             child: Container(
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 3,
+                                itemCount: productList.length,
                                 itemBuilder: product,
                               )
                             ),
@@ -192,7 +219,7 @@ class _HomeState extends State<Home> {
                       child: Container(
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: 3,
+                          itemCount: productList.length,
                           itemBuilder: productVertical,
                         )
                       ),
@@ -264,14 +291,14 @@ class _HomeState extends State<Home> {
           Expanded(
             flex: 6,
             child: Container(
-              child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              child: Image.network(productList[index].image, fit: BoxFit.cover)
             ),
           ),
 
           Expanded(
             flex: 1,
             child: Container(
-              child: Text("Product Name", style: TextStyle(color: Colors.white, fontSize: 16),),
+              child: Text(productList[index].productName, style: TextStyle(color: Colors.white, fontSize: 16),),
             ),
           ),
 
@@ -284,8 +311,8 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("\$39.9", style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
-                    Text("10% off\n \$35.5", style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
+                    Text("\$" + productList[index].productPrice, style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
+                    productList[index].offer == true ? Text(productList[index].discountPercent + "% off\n \$" + productList[index].discountAmount, style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),) : Container(),
                   ],
                 ),
               ),
@@ -296,7 +323,19 @@ class _HomeState extends State<Home> {
 
                 Expanded(
                   flex: 3,
-                  child: Icon(Icons.shopping_cart, color: Color.fromRGBO(150, 171, 182, 1),),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AddCart(product: productList[index])),
+                      ).then((value){
+                        setState(() {
+                          cartProductCount = value;
+                        });
+                      });
+                    },
+                    child: Icon(Icons.shopping_cart, color: Color.fromRGBO(150, 171, 182, 1),),
+                  ),
                 ),
               ],
             ),
@@ -326,7 +365,8 @@ class _HomeState extends State<Home> {
           Expanded(
             flex: 6,
             child: Container(
-              child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              // child:  Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              child: Image.network(adsList[index].image, fit: BoxFit.cover),
             ),
           ),
           SizedBox(
@@ -351,14 +391,14 @@ class _HomeState extends State<Home> {
           Expanded(
             flex: 6,
             child: Container(
-              child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              child: Image.network(productList[index].image, fit: BoxFit.cover),
             ),
           ),
 
           Expanded(
             flex: 1,
             child: Container(
-              child: Text("Product Name", style: TextStyle(color: Colors.white, fontSize: 16),),
+              child: Text(productList[index].productName, style: TextStyle(color: Colors.white, fontSize: 16),),
             ),
           ),
 
@@ -371,8 +411,8 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("\$39.9", style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
-                    Text("10% off\n \$35.5", style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
+                    Text("\$"+productList[index].productPrice, style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),),
+                    productList[index].offer == true ? Text(productList[index].discountPercent+"% off\n \$"+productList[index].discountAmount, style: TextStyle(color: Color.fromRGBO(150, 171, 182, 1), fontSize: 12),) : Container(),
                   ],
                 ),
               ),
@@ -401,9 +441,6 @@ class _HomeState extends State<Home> {
       margin: EdgeInsets.only(bottom: 10),
       height: MediaQuery.of(context).size.height/3,
       width: MediaQuery.of(context).size.width*2/3,
-      // decoration: BoxDecoration(
-      //   border: Border.all(width: 3,color: Color.fromRGBO(192, 212, 220, 1)),
-      // ),
       child: Column(
         children: <Widget>[
           SizedBox(
@@ -411,7 +448,8 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
             child: Container(
-              child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              // child: Image.asset("assets/product.jpg", fit: BoxFit.cover)
+              child: Image.network(adsList[index].image, fit: BoxFit.cover),
             ),
           ),
           SizedBox(

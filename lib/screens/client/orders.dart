@@ -20,7 +20,7 @@ class _OrdersState extends State<Orders> {
   }
 
   getAllOrders() async {
-    List<Order> _orderList = await OrderController.getAllCategories();
+    List<Order> _orderList = await OrderController.getAllOrders();
     setState(() {
       orderList = _orderList;
     });
@@ -57,7 +57,15 @@ class _OrdersState extends State<Orders> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text("Track my order", style: TextStyle(fontSize: 18, color: Colors.white)),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => TrackOrder()),
+                    );
+                  },
+                  child: Text("Track my order", style: TextStyle(fontSize: 18, color: Colors.white)),
+                ),
               ],
             ),
 
@@ -82,56 +90,53 @@ class _OrdersState extends State<Orders> {
   }
 
   Widget order(BuildContext context, int index){
-    return InkWell(
-      onTap: ()=> Navigator.of(context).push(MaterialPageRoute(builder: (context)=> TrackOrder(orderId: orderList[index].id,))),
-      child: Container(
-        margin: EdgeInsets.only(bottom: 15,),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(left: BorderSide(width: 7, color: index == 0 ? Colors.green : Color.fromRGBO(109, 111, 111, 1)))
-        ),
-        height: 90,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                margin: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 20),
-                child: CircleAvatar(
-                  radius: 1000,
-                    backgroundImage: AssetImage(
-                      'assets/products/order.png',
-                    ),
+    return Container(
+      margin: EdgeInsets.only(bottom: 15,),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(left: BorderSide(width: 7, color: index == 0 ? Colors.green : Color.fromRGBO(109, 111, 111, 1)))
+      ),
+      height: 90,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 20),
+              child: CircleAvatar(
+                radius: 1000,
+                  backgroundImage: AssetImage(
+                    'assets/products/order.png',
                   ),
-              ),
+                ),
             ),
+          ),
 
-            Expanded(
-              flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+          Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
 
-                  Expanded(
-                    flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(orderList[index].orderName, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(orderList[index].orderName, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)), 
+                    ],
                   ),
+                ),
 
-                  Expanded(
-                    flex: 2,
-                    child: Text("\$14.99")
-                  ),
-                ],
-              ),
+                Expanded(
+                  flex: 2,
+                  child: Text("\$14.99")
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:delivery_app/models/cart_product.dart';
 
 class Order {
   String id;
@@ -8,6 +8,8 @@ class Order {
   DateTime orderDate;
   String status;
   GeoPoint position;
+  String totalAmount;
+  var products;
 
   Order(
     {
@@ -16,7 +18,9 @@ class Order {
       this.orderBy,
       this.orderDate,
       this.status,
-      this.position
+      this.position,
+      this.totalAmount,
+      this.products
     }
   );
 
@@ -28,6 +32,12 @@ class Order {
     orderDate = json['orderDate'].toDate();
     status = json['status'];
     position = json['position'];
+    totalAmount = json['totalAmount'];
+    var _products = [];
+    for(int i=0; i< json['products'].length; i++){
+      _products.add(new CartProduct.fromJson(json['products'][i]));
+      products = _products;
+    }
   }
 
 
@@ -38,5 +48,7 @@ class Order {
     'orderDate': orderDate,
     'status': status,
     'position': position,
+    'totalAmount' : totalAmount,
+    'products': products.map((product) {return product.toJson();}),
   };
 }

@@ -20,7 +20,7 @@ class Auth implements BaseAuth {
 
   Future<User> getUserInfo(String uid) async {
     QuerySnapshot docSnapShot = await db
-        .collection('users')
+        .collection('clients')
         .where('uid', isEqualTo: uid)
         .getDocuments();
     if (docSnapShot == null || docSnapShot.documents.length == 0) {

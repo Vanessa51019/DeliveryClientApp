@@ -1,7 +1,6 @@
 import 'package:delivery_app/firebase_services/authentication.dart';
-import 'package:delivery_app/screens/client/home.dart';
-import 'package:delivery_app/screens/client/search.dart';
 import 'package:delivery_app/screens/start.dart';
+import 'package:delivery_app/utils/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -72,10 +71,9 @@ class _LoginState extends State<Login> {
 
         if (userId.length > 0 && userId != null) {
           //save user info in SessionManager (SharedPreference)
-          print("user");
           var user = await Auth().getUserInfo(userId);
-          print(user);
-          // SessionManager.saveUserInfoToLocal(user);
+
+          SessionManager.saveUserInfoToLocal(user);
 
           Navigator.pushReplacement(
               context,

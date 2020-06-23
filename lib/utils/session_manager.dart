@@ -8,7 +8,6 @@ const String DateFormat = 'yyyy-MM-dd';
 class SessionManager {
   static final String KEY_LOGGEDIN = 'logged_in';
   static final String KEY_EMAIL = 'key_email';
-  static final String KEY_TYPE = 'key_type';
   static final String KEY_USERNAME = 'key_username';
   static final String KEY_USER_ID = 'key_user_id';
   static SharedPreferences _sharedPrefs;
@@ -29,9 +28,8 @@ class SessionManager {
 
   static void saveUserInfoToLocal(User userInfo) {
     SessionManager.setUserId(userInfo.uid);
-    SessionManager.setUserName(userInfo.username);
+    SessionManager.setUserName(userInfo.name);
     SessionManager.setEmail(userInfo.email);
-    SessionManager.setType(userInfo.type);
   }
 
   static bool isLoggin(){
@@ -60,7 +58,6 @@ class SessionManager {
     setUserId(null);
     setUserName('');
     setEmail('');
-    setType(0);
   }
 
   static String getUserName() {
@@ -77,13 +74,5 @@ class SessionManager {
 
   static void setEmail(String email) {
     _sharedPrefs.setString(KEY_EMAIL, email);
-  }
-
-  static String getType() {
-    return _sharedPrefs.getString(KEY_TYPE) ?? 0;
-  }
-
-  static void setType(int type) {
-    _sharedPrefs.setInt(KEY_TYPE, type);
   }
 }
