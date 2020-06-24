@@ -31,6 +31,12 @@ class _ChatPageState extends State<ChatPage> {
       }).then((value) => _newMessageController.value = TextEditingValue(text: ""));
     }
   }
+
+
+  _getMessages() async {
+    if(user == null)user = await FirebaseAuth.instance.currentUser();
+    return Firestore.instance.collection("chats").document(user?.uid).collection('userChats').orderBy('timeStamp').snapshots()
+  }
   
   
   @override
@@ -65,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                 width: width,
                 height: height,
                 child: StreamBuilder(
-                  stream: Firestore.instance.collection("chats").document(user?.uid).collection('userChats').orderBy('timeStamp').snapshots(),
+                  stream: _getMessages(),
                   builder: (context,snapshot){
                     if(snapshot.hasData){
                       if(snapshot.data.documents.length < 1){
@@ -106,6 +112,7 @@ class _ChatPageState extends State<ChatPage> {
               Positioned(
                 bottom: 0,
                 child: Container(
+                  color: Colors.white,
                   width: width,
                   padding: EdgeInsets.all(10),
                   child: Row(
