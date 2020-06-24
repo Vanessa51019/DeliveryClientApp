@@ -35,7 +35,7 @@ class _ChatPageState extends State<ChatPage> {
 
   _getMessages() async {
     if(user == null)user = await FirebaseAuth.instance.currentUser();
-    return Firestore.instance.collection("chats").document(user?.uid).collection('userChats').orderBy('timeStamp').snapshots()
+    return Firestore.instance.collection("chats").document(user?.uid).collection('userChats').orderBy('timeStamp').snapshots();
   }
   
   
