@@ -1,3 +1,4 @@
+import 'package:delivery_app/screens/client/contact.dart';
 import 'package:delivery_app/screens/client/home.dart';
 import 'package:delivery_app/screens/client/orders.dart';
 import 'package:delivery_app/screens/client/search.dart';
@@ -26,6 +27,8 @@ class _StartState extends State<Start> {
   }
 
   void _onItemTapped(int index) {
+
+     print(index);
     setState(() {
       switch(index) {
         case 0: 
@@ -61,10 +64,19 @@ class _StartState extends State<Start> {
           }
         break;
 
-        case 4: 
+        case 4:
           {
             setState(() {
               // tabBody = Search();
+              currentIndex = index;
+            });
+          }
+        break;
+
+        case 5:
+          {
+            setState(() {
+               tabBody = ContactPage();
               currentIndex = index;
             });
           }

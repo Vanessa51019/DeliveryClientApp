@@ -51,14 +51,18 @@ class PaymentService{
   }
 
   void setError(dynamic error) {
-    Fluttertoast.showToast(msg: error.toString());
+//    Fluttertoast.showToast(msg: error.toString());
+  print(error.toString());
   }
 
   void finalizePayment(){
-    Alert(context: context, style: AlertStyle(isCloseButton: false,isOverlayTapDismiss: true),title: "Success",desc: "Payment Successful",buttons: [
+    Alert(context: context, style: AlertStyle(isCloseButton: false,isOverlayTapDismiss: false),title: "Success",desc: "Payment Successful",buttons: [
       DialogButton(
-        child: Text("Payment Successful"),
-        onPressed: ()=> Navigator.of(context).pop(),
+        child: Text("Done"),
+        onPressed: (){
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
         color: Colors.green,
       )
     ]).show();

@@ -98,30 +98,6 @@ class _HomeState extends State<Home> {
                     ),
                     Image.asset("assets/images/small_logo.png"),
                     Text("Home", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-
-                    Container(
-                      color: Colors.white,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: "Input Amount"
-                          ),
-                        ),
-                      ),
-                    ),
-                    RaisedButton(
-                      onPressed: () async {
-                        //Here you just put the amount you want to play in dollars
-                        PaymentService.pay(5, context);
-                      },
-                      color: Colors.blue,
-                      child: Container(
-                        child: Text("Make Payment"),
-                      ),
-                    ),
                     Expanded(
                       child: Container(
                         child: Column(

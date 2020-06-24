@@ -2,6 +2,7 @@ import 'package:delivery_app/firebase_services/cart_controller.dart';
 import 'package:delivery_app/firebase_services/order_controller.dart';
 import 'package:delivery_app/models/cart_product.dart';
 import 'package:delivery_app/models/product.dart';
+import 'package:delivery_app/payment_service/paymennt_service.dart';
 import 'package:delivery_app/screens/client/home.dart';
 import 'package:delivery_app/screens/client/search.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,9 @@ class _AddCartState extends State<AddCart> {
   placeOrder() async {
     await CartController.deleteAllCartProducts();
     await OrderController.placeOrder(getSubTotal(), cartProductList);
+
+    PaymentService.pay(getSubTotal().toInt()>0?getSubTotal().toInt(): 5,context);
+
     setState(() {
       cartProductList = [];
     });
