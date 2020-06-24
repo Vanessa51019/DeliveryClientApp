@@ -17,7 +17,11 @@ class _ChatPageState extends State<ChatPage> {
   @override
   initState(){
     super.initState();
-    FirebaseAuth.instance.currentUser().then((value) => user = value).catchError((er)=> Navigator.of(context).pop());
+    FirebaseAuth.instance.currentUser().then((value){
+      setState(() {
+        user = value;
+      });
+    }).catchError((er)=> Navigator.of(context).pop());
 
   }
   
@@ -30,12 +34,6 @@ class _ChatPageState extends State<ChatPage> {
         "userId": user?.uid
       }).then((value) => _newMessageController.value = TextEditingValue(text: ""));
     }
-  }
-
-
-  _getMessages() async {
-    if(user == null)user = await FirebaseAuth.instance.currentUser();
-    return Firestore.instance.collection("chats").document(user?.uid).collection('userChats').orderBy('timeStamp').snapshots();
   }
   
   
@@ -70,8 +68,8 @@ class _ChatPageState extends State<ChatPage> {
               Container(
                 width: width,
                 height: height,
-                child: StreamBuilder(
-                  stream: _getMessages(),
+                child: user == null? Container(): StreamBuilder(
+                  stream: Firestore.instance.collection("chats").document(user.uid).collection('userChats').orderBy('timeStamp').snapshots(),
                   builder: (context,snapshot){
                     if(snapshot.hasData){
                       if(snapshot.data.documents.length < 1){
@@ -112,7 +110,6 @@ class _ChatPageState extends State<ChatPage> {
               Positioned(
                 bottom: 0,
                 child: Container(
-                  color: Colors.white,
                   width: width,
                   padding: EdgeInsets.all(10),
                   child: Row(
