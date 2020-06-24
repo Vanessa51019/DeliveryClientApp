@@ -5,6 +5,7 @@ import 'package:delivery_app/firebase_services/product_controller.dart';
 import 'package:delivery_app/models/ads_model.dart';
 import 'package:delivery_app/models/cart_product.dart';
 import 'package:delivery_app/models/product.dart';
+import 'package:delivery_app/payment_service/paymennt_service.dart';
 import 'package:delivery_app/screens/client/add_cart.dart';
 import 'package:delivery_app/screens/client/cart_view.dart';
 import 'package:flutter/material.dart';
@@ -55,227 +56,253 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Image.asset("assets/images/background.jpg", fit: BoxFit.cover),
-          ),
-          Visibility(
-            visible: horizontal,
-            child: Container(
+    return SafeArea(
+      child: Stack(
+          children: <Widget>[
+            Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => CartView()),  
-                      ).then((value){
-                        setState(() {
-                          cartProductCount = value;
+              child: Image.asset("assets/images/background.jpg", fit: BoxFit.cover),
+            ),
+            Visibility(
+              visible: horizontal,
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => CartView()),  
+                        ).then((value){
+                          setState(() {
+                            cartProductCount = value;
+                          });
                         });
-                      });
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(Icons.settings, color: Color.fromRGBO(192, 220, 245, 1)),
-                          Badge(
-                            badgeContent: Text(cartProductCount.toString() , style: TextStyle(color: Colors.white),),
-                            child: Icon(Icons.shopping_cart, color: Color.fromRGBO(192, 220, 245, 1)),
-                          ),
-                        ],
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Icon(Icons.settings, color: Color.fromRGBO(192, 220, 245, 1)),
+                            Badge(
+                              badgeContent: Text(cartProductCount.toString() , style: TextStyle(color: Colors.white),),
+                              child: Icon(Icons.shopping_cart, color: Color.fromRGBO(192, 220, 245, 1)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Image.asset("assets/images/small_logo.png"),
-                  Text("Home", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            flex:1,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10,),
-                              child: Text("Promotions", style: TextStyle(color: Colors.white,)),
-                            ),
-                          ),
-                          Expanded(
-                            flex:8,
-                            child: Container(
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: productList.length,
-                                itemBuilder: product,
-                              )
-                            ),
-                          ),
-                          Expanded(
-                            flex:1,
-                            child: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  horizontal = false;
-                                  promotionVertical = true;
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10,),
-                                child: Text("Show all promotions", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1),),),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                    Image.asset("assets/images/small_logo.png"),
+                    Text("Home", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
 
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            flex:1,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10,),
-                              child: Text("Ads", style: TextStyle(color: Colors.white,),),
-                            ),
+                    Container(
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: "Input Amount"
                           ),
-                          Expanded(
-                            flex:8,
-                            child: Container(
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: adsList.length,
-                                itemBuilder: ads,
-                              )
-                            ),
-                          ),
-                          Expanded(
-                            flex:1,
-                            child: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  adsVerticalValue = true;
-                                  horizontal = false;
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10,),
-                                child: Text("Show all ads", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1),),),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          Visibility(
-            visible: promotionVertical,
-            child: Center(
-              child: Container(
-                margin: EdgeInsets.only(top: 50),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width*2/3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      flex:1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Promotions", style: TextStyle(color: Colors.white,),),
-                          GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                promotionVertical = false;
-                                horizontal = true;
-                              });
-                            },
-                            child: Text("Return", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1)),),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex:20,
+                    RaisedButton(
+                      onPressed: () async {
+                        //Here you just put the amount you want to play in dollars
+                        PaymentService.pay(5, context);
+                      },
+                      color: Colors.blue,
                       child: Container(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: productList.length,
-                          itemBuilder: productVertical,
-                        )
+                        child: Text("Make Payment"),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              flex:1,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10,),
+                                child: Text("Promotions", style: TextStyle(color: Colors.white,)),
+                              ),
+                            ),
+                            Expanded(
+                              flex:8,
+                              child: Container(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: productList.length,
+                                  itemBuilder: product,
+                                )
+                              ),
+                            ),
+                            Expanded(
+                              flex:1,
+                              child: GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    horizontal = false;
+                                    promotionVertical = true;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10,),
+                                  child: Text("Show all promotions", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1),),),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              flex:1,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10,),
+                                child: Text("Ads", style: TextStyle(color: Colors.white,),),
+                              ),
+                            ),
+                            Expanded(
+                              flex:8,
+                              child: Container(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: adsList.length,
+                                  itemBuilder: ads,
+                                )
+                              ),
+                            ),
+                            Expanded(
+                              flex:1,
+                              child: GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    adsVerticalValue = true;
+                                    horizontal = false;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10,),
+                                  child: Text("Show all ads", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1),),),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          // Vertical ads
-          Visibility(
-            visible: adsVerticalValue,
-            child: Center(
-              child: Container(
-                margin: EdgeInsets.only(top: 50),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width*2/3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      flex:1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Ads", style: TextStyle(color: Colors.white,),),
-                          GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                adsVerticalValue = false;
-                                horizontal = true;
-                              });
-                            },
-                            child: Text("Return", style: TextStyle(color:Color.fromRGBO(14, 187, 238, 1),),),
-                          ),
-                        ],
+
+            Visibility(
+              visible: promotionVertical,
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.only(top: 50),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width*2/3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        flex:1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Promotions", style: TextStyle(color: Colors.white,),),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  promotionVertical = false;
+                                  horizontal = true;
+                                });
+                              },
+                              child: Text("Return", style: TextStyle(color: Color.fromRGBO(14, 187, 238, 1)),),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex:20,
-                      child: Container(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: adsList.length,
-                          itemBuilder: adsVertical,
-                        )
+                      Expanded(
+                        flex:20,
+                        child: Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: productList.length,
+                            itemBuilder: productVertical,
+                          )
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      );
+            // Vertical ads
+            Visibility(
+              visible: adsVerticalValue,
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.only(top: 50),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width*2/3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        flex:1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Ads", style: TextStyle(color: Colors.white,),),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  adsVerticalValue = false;
+                                  horizontal = true;
+                                });
+                              },
+                              child: Text("Return", style: TextStyle(color:Color.fromRGBO(14, 187, 238, 1),),),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex:20,
+                        child: Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: adsList.length,
+                            itemBuilder: adsVertical,
+                          )
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+    );
   }
 
   Widget product(BuildContext context, int index){
