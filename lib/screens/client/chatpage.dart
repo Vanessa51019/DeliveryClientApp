@@ -13,6 +13,8 @@ class _ChatPageState extends State<ChatPage> {
 
 
   TextEditingController _newMessageController = TextEditingController();
+  
+  ScrollController _scrollController = ScrollController();
 
   FirebaseUser user;
 
@@ -34,7 +36,10 @@ class _ChatPageState extends State<ChatPage> {
         "timeStamp": DateTime.now().millisecondsSinceEpoch,
         "message": _newMessageController.text,
         "userId": user?.uid
-      }).then((value) => _newMessageController.value = TextEditingValue(text: ""));
+      }).then((value){
+        _newMessageController.value = TextEditingValue(text: "");
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
     }
   }
   
@@ -48,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         centerTitle: true,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(height * 0.07),
+          preferredSize: Size.fromHeight(48),
           child: Container(
             height: 48,
             alignment: Alignment.center,
@@ -87,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     user == null? Center(child: CircularProgressIndicator(),): Container(
-                      height: height * 0.7,
+                      height: height - (100 + 50 + 100),
                       child: StreamBuilder(
                         stream: Firestore.instance.collection("chats").document(user.uid).collection('userChats').orderBy('timeStamp').snapshots(),
                         builder: (context,snapshot){
@@ -97,6 +102,7 @@ class _ChatPageState extends State<ChatPage> {
                             }
                             else{
                               return ListView.separated(
+                                controller: _scrollController,
                                   shrinkWrap: true,
                                   separatorBuilder: (context,ind)=> SizedBox(height: 5,),
                                   itemCount: snapshot.data.documents.length,
