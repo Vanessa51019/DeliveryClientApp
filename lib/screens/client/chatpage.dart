@@ -35,7 +35,7 @@ class _ChatPageState extends State<ChatPage> {
   sendMessage()async {
     if(_newMessageController.text.isNotEmpty){
       Firestore.instance.collection("chats").document(user.uid).collection("userChats").add({
-        "timeStamp": DateTime.now().millisecondsSinceEpoch,
+        "timeStamp": FieldValue.serverTimestamp(),
         "message": _newMessageController.text,
         "userId": user?.uid
       }).then((value){
@@ -104,10 +104,9 @@ class _ChatPageState extends State<ChatPage> {
                             }
                             else{
                               Timer.run(() {
-                                _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                                _scrollController.jumpTo(_scrollController.position?.maxScrollExtent);
                               });
                               return ListView.separated(
-
                                 controller: _scrollController,
                                   shrinkWrap: true,
                                   separatorBuilder: (context,ind)=> SizedBox(height: 5,),
@@ -139,7 +138,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   ),
                                                   child: Text("${snapshot.data.documents[ind]['message']}",style: TextStyle(color: snapshot.data.documents[ind]["userId"] == user.uid?Colors.white: Colors.black),),
                                                 ),
-                                                Text("${timeago.format(DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[ind]['timeStamp']), locale: 'en_short')}")
+                                                snapshot.data.documents[ind]['timeStamp'] == null? Container(): Text("${timeago.format(DateTime.parse(snapshot.data.documents[ind]['timeStamp']?.toDate().toString()), locale: 'en_short')}")
                                               ],
                                             ),
                                           ),
