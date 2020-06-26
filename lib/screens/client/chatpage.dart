@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     user == null? Center(child: CircularProgressIndicator(),): Container(
-                      height: height - (100 + 50 + 100),
+                      height: height - (100 + 50 + 100) - MediaQuery.of(context).viewInsets.bottom,
                       child: StreamBuilder(
                         stream: Firestore.instance.collection("chats").document(user.uid).collection('userChats').orderBy('timeStamp').snapshots(),
                         builder: (context,snapshot){
