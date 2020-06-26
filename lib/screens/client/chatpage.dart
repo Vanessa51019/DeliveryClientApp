@@ -160,14 +160,13 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     Container(
-                      height: 50,
                       color: Colors.white,
                       width: width,
                       padding: EdgeInsets.all(10),
                       child: Row(
                         children: <Widget>[
                           Container(
-                            width: width * .8,
+                            width: width * .75,
                             child: TextField(
                               controller: _newMessageController,
                               decoration: InputDecoration(
@@ -179,7 +178,10 @@ class _ChatPageState extends State<ChatPage> {
                               fit: BoxFit.fitWidth,
                               child: InkWell(
                                   onTap: ()=> sendMessage(),
-                                  child: Text("Send".toUpperCase())))
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Send".toUpperCase()),
+                                  )))
                         ],
                       ),
                     )
