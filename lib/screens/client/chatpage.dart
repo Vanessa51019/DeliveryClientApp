@@ -23,10 +23,13 @@ class _ChatPageState extends State<ChatPage> {
   @override
   initState(){
     super.initState();
-    FirebaseAuth.instance.currentUser().then((value){
+    FirebaseAuth.instance.currentUser().then((value)async {
       setState(() {
         user = value;
       });
+      var userDocument = await Firestore.instance.collection("chats").document(value.uid).get();
+      if(!userDocument.exists)Firestore.instance.collection("chats").document(value.uid).collection("userChats");
+
     }).catchError((er)=> Navigator.of(context).pop());
 
   }
@@ -34,6 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   
   sendMessage()async {
     if(_newMessageController.text.isNotEmpty){
+      if(user == null)user = await FirebaseAuth.instance.currentUser();
       Firestore.instance.collection("chats").document(user.uid).collection("userChats").add({
         "timeStamp": FieldValue.serverTimestamp(),
         "message": _newMessageController.text,
