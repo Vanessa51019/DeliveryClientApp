@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -101,9 +103,9 @@ class _ChatPageState extends State<ChatPage> {
                               return Center(child: Text("No Chats Yet"),);
                             }
                             else{
-                              _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-
-
+                              Timer.run(() {
+                                _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                              });
                               return ListView.separated(
 
                                 controller: _scrollController,
