@@ -101,7 +101,11 @@ class _ChatPageState extends State<ChatPage> {
                               return Center(child: Text("No Chats Yet"),);
                             }
                             else{
+                              _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+
+
                               return ListView.separated(
+
                                 controller: _scrollController,
                                   shrinkWrap: true,
                                   separatorBuilder: (context,ind)=> SizedBox(height: 5,),
