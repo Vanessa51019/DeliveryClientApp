@@ -37,7 +37,10 @@ class _ChatPageState extends State<ChatPage> {
   
   sendMessage()async {
     if(_newMessageController.text.isNotEmpty){
-      if(user == null)user = await FirebaseAuth.instance.currentUser();
+      print("user id below");
+      print(user.uid);
+      if(user.uid == null)user = await FirebaseAuth.instance.currentUser();
+      Firestore.instance.collection("chats").document(user.uid).setData({'dummyData': "dummy"});
       Firestore.instance.collection("chats").document(user.uid).collection("userChats").add({
         "timeStamp": FieldValue.serverTimestamp(),
         "message": _newMessageController.text,
