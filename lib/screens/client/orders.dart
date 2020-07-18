@@ -29,7 +29,6 @@ class _OrdersState extends State<Orders> {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       children: <Widget>[
         Container(
@@ -40,7 +39,6 @@ class _OrdersState extends State<Orders> {
 
         Column(
           children: <Widget>[
-            
             Expanded(
               flex: 2,
               child: Column(

@@ -1,5 +1,5 @@
 import 'package:delivery_app/firebase_services/authentication.dart';
-import 'package:delivery_app/screens/start.dart';
+import 'package:delivery_app/screens/tabPage.dart';
 import 'package:delivery_app/utils/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => Start()));
+                  builder: (context) => TabPage()));
         }
       } catch (e) {
         setState(() {

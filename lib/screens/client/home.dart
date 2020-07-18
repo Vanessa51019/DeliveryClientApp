@@ -5,7 +5,6 @@ import 'package:delivery_app/firebase_services/product_controller.dart';
 import 'package:delivery_app/models/ads_model.dart';
 import 'package:delivery_app/models/cart_product.dart';
 import 'package:delivery_app/models/product.dart';
-import 'package:delivery_app/payment_service/paymennt_service.dart';
 import 'package:delivery_app/screens/client/add_cart.dart';
 import 'package:delivery_app/screens/client/cart_view.dart';
 import 'package:flutter/material.dart';

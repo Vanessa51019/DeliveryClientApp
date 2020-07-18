@@ -1,19 +1,27 @@
+import 'package:delivery_app/screens/client/appointmentPage.dart';
 import 'package:delivery_app/screens/client/contact.dart';
 import 'package:delivery_app/screens/client/home.dart';
+import 'package:delivery_app/screens/client/notificationPage.dart';
 import 'package:delivery_app/screens/client/orders.dart';
 import 'package:delivery_app/screens/client/search.dart';
 import 'package:flutter/material.dart';
 
-class Start extends StatefulWidget {
+class TabPage extends StatefulWidget {
 
   @override
-  _StartState createState() => _StartState();
+  _TabPageState createState() => _TabPageState();
 
 }
-class _StartState extends State<Start> {
+class _TabPageState extends State<TabPage> {
 
-
-  Widget tabBody;
+  List<Widget> _tabs = [
+    Home(),
+    Search(),
+    AppointmentPage(),
+    Orders(),
+    Notifications(),
+    ContactPage(),
+  ];
   bool promotionVertical = false;
   bool adsVerticalValue = false;
   bool horizontal = true;
@@ -21,73 +29,13 @@ class _StartState extends State<Start> {
 
   @override
   void initState() {
-    tabBody = Home();
 
     super.initState();
   }
 
   void _onItemTapped(int index) {
-
-     print(index);
     setState(() {
-      switch(index) {
-        case 0: 
-          { 
-            setState(() {
-              tabBody = Home();
-              currentIndex = index;
-            });
-          }
-        break;
-        case 1: 
-          {
-            setState(() {
-              tabBody = Search();
-              currentIndex = index;
-            });
-          }
-        break;
-        case 2: 
-          {
-            setState(() {
-              tabBody = Orders();
-              currentIndex = index;
-            });
-          }
-        break;
-        case 3: 
-          {
-            setState(() {
-              tabBody = Orders();
-              currentIndex = index;
-            });
-          }
-        break;
-
-        case 4:
-          {
-            setState(() {
-              // tabBody = Search();
-              currentIndex = index;
-            });
-          }
-        break;
-
-        case 5:
-          {
-            setState(() {
-               tabBody = ContactPage();
-              currentIndex = index;
-            });
-          }
-        break;
-
-        default: 
-          {
-            // tabBody = Search();
-            currentIndex = index;
-          }
-      }
+      currentIndex = index;
     });
   }
 
@@ -141,7 +89,7 @@ class _StartState extends State<Start> {
           onTap: _onItemTapped,
         ),
       ),
-      body: tabBody,
+      body: _tabs[currentIndex],
     );
   }
 }
