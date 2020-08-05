@@ -98,6 +98,7 @@ class _TrackOrderState extends State<TrackOrder> {
             setState(() {
               _markers.removeWhere((element) => element.markerId == MarkerId("driver"));
               print("pin location icon below");
+              
               print(pinLocationIcon);
               _markers.add(Marker(
                 markerId: MarkerId("driver"),
