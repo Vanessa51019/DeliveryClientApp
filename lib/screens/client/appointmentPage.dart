@@ -198,7 +198,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text("Dr.${doctors[index]["name"]}", style: TextStyle(color: Colors.white),),
-                Text("${doctors[index]["speciality"]}", style: TextStyle(fontSize: 13, color: Colors.white),),
+                Text("${doctors[index]["speciality"]}".replaceAll("S1", "Plastic Surgeon").replaceAll("S2", "General Practitioner").replaceAll("S3", "Cardiologist"), style: TextStyle(fontSize: 13, color: Colors.white),),
               ],
             ),
           ],
