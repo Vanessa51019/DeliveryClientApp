@@ -19,7 +19,7 @@ class _TabPageState extends State<TabPage> {
     Search(),
     AppointmentPage(),
     Orders(),
-    Notifications(),
+    NotificaitonPage(),
     ContactPage(),
   ];
   bool promotionVertical = false;

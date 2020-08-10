@@ -1,12 +1,54 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class Notifications extends StatefulWidget {
+class NotificaitonPage extends StatefulWidget {
   @override
-  _NotificationsState createState() => _NotificationsState();
+  _NotificaitonPageState createState() => _NotificaitonPageState();
 }
 
-class _NotificationsState extends State<Notifications> {
+class _NotificaitonPageState extends State<NotificaitonPage> {
+
+
+  List _notifications = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getAllNotifications();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _seenAllNotifications();
+  }
+
+
+  _getAllNotifications() async {
+    var userId = (await FirebaseAuth.instance.currentUser()).uid;
+    Firestore.instance.collection("clients").document(userId).collection("notifications").snapshots().listen((event) {
+      setState(() {
+        _notifications = event.documents;
+      });
+    });
+  }
+
+  _seenAllNotifications() async {
+    var userId = (await FirebaseAuth.instance.currentUser()).uid;
+    Firestore.instance.collection("clients").document(userId).collection("notifications").getDocuments().then((value){
+      value.documents.forEach((element) {
+        element.reference.updateData({
+          "seen": true
+        });
+
+      });
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -18,7 +60,7 @@ class _NotificationsState extends State<Notifications> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage("assets/images/background.jpg",),fit: BoxFit.cover)
+                image: DecorationImage(image: AssetImage("assets/images/background.jpg",),fit: BoxFit.cover)
             ),
             padding: EdgeInsets.only(top: 30),
             width: width,
@@ -27,8 +69,8 @@ class _NotificationsState extends State<Notifications> {
               children: <Widget>[
                 Image.asset("assets/images/small_logo.png"),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Text("NOTIFICATIONS", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.w800),)
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Text("NOTIFICATIONS", style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.w800),)
                 ),
                 Expanded(
                   child: Padding(
@@ -37,7 +79,7 @@ class _NotificationsState extends State<Notifications> {
                       removeTop: true,
                       context: context,
                       child: ListView.builder(
-                        itemCount: 1,
+                        itemCount: _notifications.length,
                         itemBuilder: notification,
                       ),
                     ),
@@ -62,6 +104,7 @@ class _NotificationsState extends State<Notifications> {
             color: Colors.red,
             iconWidget: Icon(Icons.delete, size: 35, color: Colors.white,),
             onTap: () {
+              _notifications[index].reference.delete();
               // Delete notification
             },
           ),
@@ -76,11 +119,11 @@ class _NotificationsState extends State<Notifications> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 50, 
+              width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(0, 182, 192, 1),
-                borderRadius: BorderRadius.circular(25)
+                  color: Color.fromRGBO(0, 182, 192, 1),
+                  borderRadius: BorderRadius.circular(25)
               ),
               child: Icon(Icons.perm_identity, color: Colors.white,),
             ),
@@ -92,10 +135,10 @@ class _NotificationsState extends State<Notifications> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text("21/06/2020 03:00 p.m.", style: TextStyle(color: Colors.blue[300], fontWeight: FontWeight.w600),),
+                    Text("${_notifications[index]["timeStamp"].toDate().toString()}", style: TextStyle(color: Colors.blue[300], fontWeight: FontWeight.w600),),
                     Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: Text("The provider has accepted your appointment request")
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text("${_notifications[index]["message"]}")
                     ),
                   ],
                 ),
@@ -107,8 +150,8 @@ class _NotificationsState extends State<Notifications> {
               height: 10,
               margin: EdgeInsets.only(left: 20, right: 15),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 183, 0, 1),
-                borderRadius: BorderRadius.circular(5)
+                  color: _notifications[index]["seen"]? Colors.black: Color.fromRGBO(255, 183, 0, 1),
+                  borderRadius: BorderRadius.circular(5)
               ),
             ),
           ],

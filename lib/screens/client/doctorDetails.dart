@@ -54,11 +54,11 @@ class _DoctorDetailsState extends State<DoctorDetails>{
   _getDoctorsAppointments()async {
     Firestore.instance.collection("doctors").document(widget.details.documentID).collection("appointments").snapshots().listen((event) {
 
-      setState(() {
+//      setState(() {
         appointments = event.documents;
         print("appointments updated");
         print(appointments);
-      });
+//      });
     });
   }
 
@@ -77,7 +77,8 @@ class _DoctorDetailsState extends State<DoctorDetails>{
     Firestore.instance.collection("doctors").document(widget.details.documentID).collection("appointments").add({
       "chosenDate": selectedDate,
       "chosenTime": _selectedTime,
-      "takenBy": user
+      "takenBy": user,
+      "approved": false
     }).then((value){
       Navigator.of(context).pop();
       Fluttertoast.showToast(msg: "Appointment Taken");
