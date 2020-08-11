@@ -79,7 +79,15 @@ class _DoctorDetailsState extends State<DoctorDetails>{
       "chosenTime": _selectedTime,
       "takenBy": user,
       "approved": false
-    }).then((value){
+    }).then((value) async {
+
+      var clientName = (await Firestore.instance.collection("clients").document(user).get())["name"];
+
+      Firestore.instance.collection("providers").document(widget.details["providerUid"]).collection("notifications").add({
+        "timeStamp": FieldValue.serverTimestamp(),
+        "message": "$clientName has sent you an appointment request",
+        "seen": false
+      });
       Navigator.of(context).pop();
       Fluttertoast.showToast(msg: "Appointment Taken");
     });
