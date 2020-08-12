@@ -100,11 +100,38 @@ class _DoctorDetailsState extends State<DoctorDetails>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Appointments"),
+        backgroundColor: Color(0xff00b4b9),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            radius: 10,
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage("assets/images/profile.jpg",),
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+                child: IconButton(
+                  icon: Icon(Icons.cancel,color: Colors.black,),
+                  onPressed: ()=> Navigator.of(context).pop(),
+                )
+            ),
+          )
+        ],
+        title: ListTile(title: Text("Dr ${widget.details["name"]}",style: TextStyle(fontSize: 20,color: Colors.white),),
+          subtitle: Text("${widget.details["speciality"]}".replaceAll("S1", "Plastic Surgeon").replaceAll("S2", "General Practitioner").replaceAll("S3", "Cardiologist"),style: TextStyle(color: Colors.white70),),),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 8),
+              width: width,
+              child: Text("Check appointments",style: TextStyle(fontSize: 20,color: Color(0xff00b4b9)),),
+            ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: CalendarCarousel<Event>(
@@ -162,6 +189,56 @@ class _DoctorDetailsState extends State<DoctorDetails>{
                 todayTextStyle: TextStyle(color: Colors.black),
                 markedDatesMap: _markedDateMap,
                 daysHaveCircularBorder: true, /// null for not rendering any border, true for circular border, false for rectangular border
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 8),
+              width: width,
+              child: Wrap(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Text("Occupied",style: TextStyle(color: Colors.red)),
+                    ],
+                  ),Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Text("Not Available",style: TextStyle(color: Colors.blue)),
+                    ],
+                  ),Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          color: Colors.green,
+                        ),
+                      ),
+                      Text("Selected Day",style: TextStyle(color: Colors.green)),
+                    ],
+                  ),
+
+
+                ],
               ),
             ),
             Container(

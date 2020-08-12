@@ -29,7 +29,7 @@ class _NotificaitonPageState extends State<NotificaitonPage> {
 
   _getAllNotifications() async {
     var userId = (await FirebaseAuth.instance.currentUser()).uid;
-    Firestore.instance.collection("clients").document(userId).collection("notifications").snapshots().listen((event) {
+    Firestore.instance.collection("clients").document(userId).collection("notifications").orderBy("timeStamp",descending: true).snapshots().listen((event) {
       setState(() {
         _notifications = event.documents;
       });

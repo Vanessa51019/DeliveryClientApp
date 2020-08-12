@@ -46,7 +46,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       pendingAppointments = [];
       allDoctors.documents.forEach((element) async {
         print(element);
-        var appointments = (await Firestore.instance.collection("doctors").document(element.documentID).collection("appointments").orderBy("chosenDate").getDocuments());
+        var appointments = (await Firestore.instance.collection("doctors").document(element.documentID).collection("appointments").orderBy("chosenDate",descending: true).getDocuments());
 
         if(appointments.documents.length > 0){
           //Check if the doctor has any appointments
