@@ -13,6 +13,8 @@ class _NotificaitonPageState extends State<NotificaitonPage> {
 
   List _notifications = [];
 
+  var listeningEvent;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -24,12 +26,13 @@ class _NotificaitonPageState extends State<NotificaitonPage> {
   void dispose(){
     super.dispose();
     _seenAllNotifications();
+    listeningEvent?.cancel();
   }
 
 
   _getAllNotifications() async {
     var userId = (await FirebaseAuth.instance.currentUser()).uid;
-    Firestore.instance.collection("clients").document(userId).collection("notifications").orderBy("timeStamp",descending: true).snapshots().listen((event) {
+    listeningEvent = Firestore.instance.collection("clients").document(userId).collection("notifications").orderBy("timeStamp",descending: true).snapshots().listen((event) {
       setState(() {
         _notifications = event.documents;
       });
@@ -48,6 +51,8 @@ class _NotificaitonPageState extends State<NotificaitonPage> {
     });
 
   }
+
+
 
   @override
   Widget build(BuildContext context) {
